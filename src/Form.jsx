@@ -177,6 +177,7 @@ export default function Form() {
         ))}
       </div>
       <div className="notes-grid">
+        
         {filteredNotes.map((note, index) => (
           <div
             className="note-card"

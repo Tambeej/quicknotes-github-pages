@@ -8,14 +8,10 @@ export default function NoteModal({
   notes,
   setNotes,
   CATEGORIES,
-  noteDate,
-  setNoteDate,
 }) {
   const [modalTitle, setModalTitle] = useState("");
   const [modalText, setModalText] = useState("");
   const [modalCategory, setModalCategory] = useState("Personal");
-
-
 
   useEffect(() => {
     if (note) {
@@ -32,12 +28,11 @@ export default function NoteModal({
       modalCategory !== note.category;
 
     if (!hasChanged) {
-      // Nothing changed — just close the modal
       onClose();
       return;
     }
     const updatedNotes = notes.map((n) =>
-      n.date === note.date
+      n.createdAt === note.createdAt
         ? {
             ...n,
             title: modalTitle.trim(),
