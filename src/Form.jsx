@@ -16,6 +16,8 @@ export default function Form() {
   const [notes, setNotes] = useState([]);
   const [title, setTitle] = useState("");
   const [editingIndex, setEditingIndex] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("All");
 
   useEffect(() => {
     try {
@@ -95,6 +97,19 @@ export default function Form() {
     setNoteCategory("Personal");
   };
 
+  const filteredNotes = notes.filter((note) => {
+    const matchesSearch =
+      note.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      note.text.toLowerCase().includes(searchTerm.toLowerCase());
+
+    const matchesCategory =
+      selectedCategory === "All" || note.category === selectedCategory;
+
+    return matchesSearch && matchesCategory;
+  });
+
+  const categories = ["All", ...new Set(notes.map((note) => note.category))];
+
   return (
     <div className="container">
       <NoteModal
@@ -142,8 +157,27 @@ export default function Form() {
           Add Note
         </button>
       </div>
+      <input
+        type="text"
+        placeholder="Search notes..."
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+      />
+      <div>
+        {categories.map((cat) => (
+          <button
+            key={cat}
+            onClick={() => setSelectedCategory(cat)}
+            style={{
+              fontWeight: selectedCategory === cat ? "bold" : "normal",
+            }}
+          >
+            {cat}
+          </button>
+        ))}
+      </div>
       <div className="notes-grid">
-        {notes.map((note, index) => (
+        {filteredNotes.map((note, index) => (
           <div
             className="note-card"
             key={index}

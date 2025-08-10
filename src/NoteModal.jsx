@@ -15,6 +15,8 @@ export default function NoteModal({
   const [modalText, setModalText] = useState("");
   const [modalCategory, setModalCategory] = useState("Personal");
 
+
+
   useEffect(() => {
     if (note) {
       setModalTitle(note.title);

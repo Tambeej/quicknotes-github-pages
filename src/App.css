@@ -1,3 +1,7 @@
+* {
+  margin: 2px;
+}
+
 .container {
   max-width: 600px;
   margin: auto;
@@ -83,4 +87,13 @@ button {
   background-color: transparent;
   border-style: none;
 }
+.search-bar {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 10px;
+}
 
+.category-buttons button {
+  margin-right: 5px;
+  padding: 5px 10px;
+}
