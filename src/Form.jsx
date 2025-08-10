@@ -11,6 +11,7 @@ export default function Form() {
   const [modalIsOpen, setIsOpen] = useState(false);
   const [selectedNote, setSelectedNote] = useState(null);
   const [noteText, setNoteText] = useState("");
+  const [noteDate, setNoteDate] = useState("");
   const [noteCategory, setNoteCategory] = useState("Personal");
   const [notes, setNotes] = useState([]);
   const [title, setTitle] = useState("");
@@ -54,6 +55,7 @@ export default function Form() {
     setSelectedNote(note);
     setEditingIndex(index);
     setTitle(note.title);
+    setNoteDate(note.date);
     setNoteText(note.text);
     setNoteCategory(note.category);
     setIsOpen(true);
@@ -66,7 +68,8 @@ export default function Form() {
       title: title.trim(),
       text: noteText.trim(),
       category: noteCategory,
-      date: new Date().toLocaleString(),
+      createdAt: new Date().toLocaleString(),
+      updatedAt: null,
     };
 
     setNotes([newNote, ...notes]);
@@ -108,6 +111,8 @@ export default function Form() {
         setNotes={setNotes}
         notes={notes}
         CATEGORIES={CATEGORIES}
+        setNoteDate={setNoteDate}
+        noteDate={noteDate}
       />
       <div className="text-container">
         <input
@@ -151,13 +156,14 @@ export default function Form() {
             }}
           >
             <div className="date-and-x">
-              <small className="note-date">{note.date}</small>
+              <small>Created: {note.createdAt}</small>
+              {note.updatedAt && <small>Updated: {note.updatedAt}</small>}
               <small
                 onClick={(e) => {
                   e.stopPropagation();
                   handleDeleteNote(index);
                 }}
-                style={{ cursor: "pointer" }}
+                style={{ cursor: "pointer", padding: "2px" }}
               >
                 x
               </small>
