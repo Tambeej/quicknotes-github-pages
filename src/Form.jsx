@@ -1,15 +1,48 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import NoteModal from "./NoteModal";
 
 export default function Form() {
   const [modalIsOpen, setIsOpen] = useState(false);
   const [selectedNote, setSelectedNote] = useState(null);
-
   const [noteText, setNoteText] = useState("");
   const [notes, setNotes] = useState([]);
   const [title, setTitle] = useState("");
   const [editingIndex, setEditingIndex] = useState(null);
+
+  useEffect(() => {
+    try {
+      const storedNotes = localStorage.getItem("notes");
+      console.log("Stored notes from localStorage:", storedNotes);
+      if (storedNotes) {
+        const parsedNotes = JSON.parse(storedNotes);
+        console.log("Parsed notes:", parsedNotes);
+        if (Array.isArray(parsedNotes)) {
+          console.log("Setting notes state:", parsedNotes);
+          setNotes(parsedNotes);
+        } else {
+          console.error("Stored notes is not an array:", parsedNotes);
+        }
+      } else {
+        console.log("No notes found in localStorage, keeping empty array");
+      }
+    } catch (error) {
+      console.error("Error loading notes from localStorage:", error);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (notes.length > 0) {
+      try {
+        console.log("Saving notes to localStorage:", notes);
+        localStorage.setItem("notes", JSON.stringify(notes));
+      } catch (error) {
+        console.error("Error saving notes to localStorage:", error);
+      }
+    } else {
+      console.log("Skipping save to localStorage: notes array is empty");
+    }
+  }, [notes]);
 
   function openModal(note, index) {
     setSelectedNote(note);
@@ -33,7 +66,7 @@ export default function Form() {
     setTitle("");
   };
 
-  const handleDeleteNote = (indexToDelete) => {
+  const handleDeleteNote = (indexToDelete, e) => {
     const shouldDelete = window.confirm(
       "Are you sure you want to delete this note?"
     );
@@ -90,7 +123,10 @@ export default function Form() {
             <div className="date-and-x">
               <small className="note-date">{note.date}</small>
               <small
-                onClick={() => handleDeleteNote(index)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleDeleteNote(index);
+                }}
                 style={{ cursor: "pointer" }}
               >
                 x
