@@ -1,11 +1,17 @@
 import { useEffect, useState } from "react";
-
 import NoteModal from "./NoteModal";
+
+const CATEGORIES = {
+  Personal: "#d1e7dd",
+  Work: "#f8d7da",
+  Other: "#fff3cd",
+};
 
 export default function Form() {
   const [modalIsOpen, setIsOpen] = useState(false);
   const [selectedNote, setSelectedNote] = useState(null);
   const [noteText, setNoteText] = useState("");
+  const [noteCategory, setNoteCategory] = useState("Personal");
   const [notes, setNotes] = useState([]);
   const [title, setTitle] = useState("");
   const [editingIndex, setEditingIndex] = useState(null);
@@ -49,6 +55,7 @@ export default function Form() {
     setEditingIndex(index);
     setTitle(note.title);
     setNoteText(note.text);
+    setNoteCategory(note.category);
     setIsOpen(true);
   }
 
@@ -58,11 +65,13 @@ export default function Form() {
     const newNote = {
       title: title.trim(),
       text: noteText.trim(),
+      category: noteCategory,
       date: new Date().toLocaleString(),
     };
 
     setNotes([newNote, ...notes]);
     setNoteText("");
+    setNoteCategory("Personal");
     setTitle("");
   };
 
@@ -80,6 +89,7 @@ export default function Form() {
     setEditingIndex(null);
     setTitle("");
     setNoteText("");
+    setNoteCategory("Personal");
   };
 
   return (
@@ -89,12 +99,15 @@ export default function Form() {
         onClose={closeModal}
         note={selectedNote}
         noteText={noteText}
+        noteCategory={noteCategory}
         setNoteText={setNoteText}
+        setNoteCategory={setNoteCategory}
         title={title}
         setTitle={setTitle}
         editingIndex={editingIndex}
         setNotes={setNotes}
         notes={notes}
+        CATEGORIES={CATEGORIES}
       />
       <div className="text-container">
         <input
@@ -102,6 +115,17 @@ export default function Form() {
           value={title}
           onChange={(e) => setTitle(e.target.value)}
         />
+        <select
+          value={noteCategory}
+          onChange={(e) => setNoteCategory(e.target.value)}
+          style={{ margin: "10px 0" }}
+        >
+          {Object.keys(CATEGORIES).map((cat) => (
+            <option key={cat} value={cat}>
+              {cat}
+            </option>
+          ))}
+        </select>
         <textarea
           placeholder="Your note..."
           value={noteText}
@@ -119,6 +143,12 @@ export default function Form() {
             className="note-card"
             key={index}
             onClick={() => openModal(note, index)}
+            style={{
+              backgroundColor: CATEGORIES[note.category] || CATEGORIES.Personal,
+              border: `1px solid ${
+                CATEGORIES[note.category] || CATEGORIES.Personal
+              }`,
+            }}
           >
             <div className="date-and-x">
               <small className="note-date">{note.date}</small>
